@@ -1,4 +1,0 @@
-GET https://localhost:44469/api/Article/
-Content-Type: application/x-www-form-urlencoded
-
-Content=my favorite dog is bob&Author=Jeremy
