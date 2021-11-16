@@ -11,7 +11,7 @@ export function Home()
   },[])
   return (
     <div>
-      {articles?.map(article => <Link to={`${article.id}`}>{article.author}</Link>) ?? "loading..."}
+      {articles?.map(article => <Link to={`/article/${article.id}`}>{article.title}</Link>) ?? "loading..."}
     </div>
   )
 }
