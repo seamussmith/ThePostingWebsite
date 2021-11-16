@@ -34,7 +34,7 @@ public class ArticleController : ControllerBase
     [HttpGet]
     public IEnumerable<Article> GetArticles([FromQuery] int Skip = 0, [FromQuery] int Take = 100)
     {
-        return articleContext.Articles.Skip(Skip).Take(Take);
+        return articleContext.Articles.OrderBy(x => x.Id).Skip(Skip).Take(Take);
     }
     [HttpDelete("{id}")]
     public void DeleteArticle(long id)
