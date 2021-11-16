@@ -14,12 +14,13 @@ public class ArticleController : ControllerBase
         this.articleContext = articleContext;
     }
     [HttpPost]
-    public void PostArticle([FromForm] string Author, [FromForm] string Content, [FromForm] string? Tags)
+    public void PostArticle([FromForm] string Author, [FromForm] string Content, [FromForm] string Title, [FromForm] string? Tags)
     {
         articleContext.Articles.Add(new Article() {
             Content = Content,
             Tags = Tags ?? "",
-            Author = Author
+            Author = Author,
+            Title = Title,
         });
         articleContext.SaveChanges();
     }
@@ -27,10 +28,5 @@ public class ArticleController : ControllerBase
     public IEnumerable<Article> GetArticles([FromQuery] int Skip = 0, [FromQuery] int Take = 100)
     {
         return articleContext.Articles.Skip(Skip).Take(Take);
-    }
-    [HttpPost]
-    public void CommentOnArticle(long articleID)
-    {
-        articleContext.Articles.Where(x => x.Id == articleID).First().Comments.Add(new Comment());
     }
 }
