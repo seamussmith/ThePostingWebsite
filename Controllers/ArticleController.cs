@@ -15,6 +15,16 @@ public class ArticleController : ControllerBase
         this.articleContext = articleContext;
         this.logger = _logger;
     }
+    [HttpGet("{id}")]
+    public ActionResult<Article> GetArticle(int id)
+    {
+        return articleContext.Articles.Where(x => x.Id == id).First();
+    }
+    [HttpGet]
+    public IEnumerable<Article> GetArticles([FromQuery] int Skip = 0, [FromQuery] int Take = 100)
+    {
+        return articleContext.Articles.OrderByDescending(x => x.Id).Skip(Skip).Take(Take).AsEnumerable();
+    }
     [HttpPost]
     public ActionResult<Article> PostArticle([FromForm] string Author, [FromForm] string Content, [FromForm] string Title, [FromForm] string? Tags)
     {
@@ -26,16 +36,6 @@ public class ArticleController : ControllerBase
         });
         articleContext.SaveChanges();
         return new CreatedResult($"{Request.Path.Value}{article.Entity.Id}", article.Entity);
-    }
-    [HttpGet("{id}")]
-    public ActionResult<Article> GetArticle(int id)
-    {
-        return articleContext.Articles.Where(x => x.Id == id).First();
-    }
-    [HttpGet]
-    public IEnumerable<Article> GetArticles([FromQuery] int Skip = 0, [FromQuery] int Take = 100)
-    {
-        return articleContext.Articles.OrderByDescending(x => x.Id).Skip(Skip).Take(Take).AsEnumerable();
     }
     [HttpDelete("{id}")]
     public ActionResult DeleteArticle(long id)
