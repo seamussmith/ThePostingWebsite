@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Redirect, Route } from "react-router";
+import { Redirect, Route, Switch } from "react-router";
 import { Layout } from "./components/Layout";
 import { Home } from "./components/Home";
 
@@ -15,12 +15,14 @@ export default class App extends Component {
     render() {
         return (
             <Layout>
-                <Route exact path="/" component={Home} />
-                <Route exact path="/article/:id" component={Article} />
-                <Route exact path="/notfound" component={NotFound} />
-                <Route exact path="/notimplemented" component={NotImplemented} />
-                <Route exact path="/PostAnArticle" component={PostAnArticle} />
-                {/* <Route exact component={() => <Redirect to="/notfound" />} /> */}
+                <Switch>
+                    <Route exact path="/" component={Home} />
+                    <Route exact path="/article/:id" component={Article} />
+                    <Route exact path="/notfound" component={NotFound} />
+                    <Route exact path="/notimplemented" component={NotImplemented} />
+                    <Route exact path="/PostAnArticle" component={PostAnArticle} />                    
+                    <Route exact component={() => <Redirect to="/notfound" />} />
+                </Switch>
             </Layout>
         );
     }
