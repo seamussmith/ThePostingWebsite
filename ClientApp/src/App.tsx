@@ -18,7 +18,7 @@ export default class App extends Component {
                 <Route exact path="/article/:id" component={Article} />
                 <Route exact path="/notfound" component={NotFound} />
                 <Route exact path="/notimplemented" component={NotImplemented} />
-                <Route exact component={() => <Redirect to="/notfound" />} />
+                {/* <Route exact component={() => <Redirect to="/notfound" />} /> */}
             </Layout>
         );
     }
