@@ -15,31 +15,36 @@ public class ArticleController : ControllerBase
         this.articleContext = articleContext;
         this.logger = _logger;
     }
-    [HttpPost]
-    public void PostArticle([FromForm] string Author, [FromForm] string Content, [FromForm] string Title, [FromForm] string? Tags)
-    {
-        articleContext.Articles.Add(new Article() {
-            Content = Content,
-            Tags = Tags ?? "",
-            Author = Author,
-            Title = Title,
-        });
-        articleContext.SaveChanges();
-    }
     [HttpGet("{id}")]
-    public Article GetArticle(int id)
+    public ActionResult<Article> GetArticle(int id)
     {
         return articleContext.Articles.Where(x => x.Id == id).First();
     }
     [HttpGet]
     public IEnumerable<Article> GetArticles([FromQuery] int Skip = 0, [FromQuery] int Take = 100)
     {
-        return articleContext.Articles.OrderByDescending(x => x.Id).Skip(Skip).Take(Take);
+        return articleContext.Articles.OrderByDescending(x => x.Id).Skip(Skip).Take(Take).AsEnumerable();
+    }
+    [HttpPost]
+    public ActionResult<Article> PostArticle([FromForm] string Author, [FromForm] string Content, [FromForm] string Title, [FromForm] string? Tags)
+    {
+        var article = articleContext.Articles.Add(new Article() {
+            Content = Content,
+            Tags = Tags ?? "",
+            Author = Author,
+            Title = Title,
+        });
+        articleContext.SaveChanges();
+        return new CreatedResult($"{Request.Path.Value}{article.Entity.Id}", article.Entity);
     }
     [HttpDelete("{id}")]
-    public void DeleteArticle(long id)
+    public ActionResult DeleteArticle(long id)
     {
-        articleContext.Articles.Remove(articleContext.Articles.Where(x => x.Id == id).First());
+        var article = articleContext.Articles.Where(x => x.Id == id).FirstOrDefault();
+        if (article is null)
+            return new NotFoundResult();
+        articleContext.Articles.Remove(article);
         articleContext.SaveChanges();
+        return new OkResult();
     }
 }
