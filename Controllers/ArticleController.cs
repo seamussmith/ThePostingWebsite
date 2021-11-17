@@ -28,19 +28,20 @@ public class ArticleController : ControllerBase
         return new CreatedResult($"{Request.Path.Value}{article.Entity.Id}", article.Entity);
     }
     [HttpGet("{id}")]
-    public Article GetArticle(int id)
+    public ActionResult<Article> GetArticle(int id)
     {
         return articleContext.Articles.Where(x => x.Id == id).First();
     }
     [HttpGet]
     public IEnumerable<Article> GetArticles([FromQuery] int Skip = 0, [FromQuery] int Take = 100)
     {
-        return articleContext.Articles.OrderByDescending(x => x.Id).Skip(Skip).Take(Take);
+        return articleContext.Articles.OrderByDescending(x => x.Id).Skip(Skip).Take(Take).AsEnumerable();
     }
     [HttpDelete("{id}")]
-    public void DeleteArticle(long id)
+    public ActionResult DeleteArticle(long id)
     {
         articleContext.Articles.Remove(articleContext.Articles.Where(x => x.Id == id).First());
         articleContext.SaveChanges();
+        return new OkResult();
     }
 }
