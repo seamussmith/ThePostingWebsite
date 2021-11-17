@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Route } from "react-router";
+import { Redirect, Route } from "react-router";
 import { Layout } from "./components/Layout";
 import { Home } from "./components/Home";
 
@@ -18,6 +18,7 @@ export default class App extends Component {
                 <Route exact path="/article/:id" component={Article} />
                 <Route exact path="/notfound" component={NotFound} />
                 <Route exact path="/notimplemented" component={NotImplemented} />
+                <Route exact component={() => <Redirect to="/notfound" />} />
             </Layout>
         );
     }
