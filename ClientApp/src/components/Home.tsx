@@ -8,5 +8,5 @@ export function Home() {
             .then((blob) => blob.json())
             .then((articles) => setArticles(articles));
     }, []);
-    return <div>{articles?.map((article) => <Link to={`/article/${article.id}`}>{article.title}</Link>) ?? "loading..."}</div>;
+    return <div>{articles?.map((article) => <div><Link to={`/article/${article.id}`}>{article.title}</Link></div>) ?? "loading..."}</div>;
 }
