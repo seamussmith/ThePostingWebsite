@@ -7,6 +7,7 @@ export function PostAnArticle({}) {
     // Set to true when submitting the article
     const [disabled, setDisabled] = useState(false);
     const [error, setError] = useState<any>(null);
+    const [isServerError, setIsServerError] = useState(false);
     // Form Input values
     // NOTE: Hot reload may make state out of sync with the document. Take note when debugging.
     const [author, setAuthor] = useState("");
@@ -21,6 +22,8 @@ export function PostAnArticle({}) {
         // I hate typing
         const _e = encodeURIComponent;
         setDisabled(true);
+        setError(false);
+        setIsServerError(false);
 
         // Promise.all awaiting both the article posting and the artificial wait time
         // This is done in the case that posting an article takes longer than the artificial wait time.
@@ -28,18 +31,22 @@ export function PostAnArticle({}) {
             // Post the article to the article api
             fetch("/api/article/", {
                 method: "POST",
-                body: new URLSearchParams(`Author=${_e(author)}&Tags=${_e(tags)}&Content=${_e(content)}`),
+                body: new URLSearchParams(`Title=${_e(title)}&Author=${_e(author)}&Tags=${_e(tags)}&Content=${_e(content)}`),
             }).then<Article>(async (blob) => {
                 if (blob.ok) {
                     return blob.json();
-                } else {
+                } else if (blob.status >= 500) {
+                    setIsServerError(true);
                     throw await blob.json();
+                } else if (blob.status >= 400) {
+                    throw await blob.json();
+                } else {
+                    throw new Error("oh god everything is going wrong");
                 }
             }),
             // 500 - 2500ms artificial wait time
             await new Promise<void>((resolve) => setTimeout(() => resolve(), Math.random() * 2000 + 500)),
         ]).catch(async (x) => {
-            console.log(Object.values(x.errors));
             setDisabled(false);
             setError(x);
             throw x;
@@ -90,24 +97,23 @@ export function PostAnArticle({}) {
                     </Button>
                 </FormGroup>
             </Form>
-            <div>
-                {error && (
-                    <div className="mt-2">
-                        <h5 className="text-danger">The following errors have occured while processing your request:</h5>
-                        <ul>
-                            {Object.values<string[]>(error.errors)
+            {error && (
+                <div className="mt-2">
+                    <h5 className="text-danger">The following errors have occured while processing your request:</h5>
+                    <ul>
+                        {!isServerError &&
+                            Object.values<string[]>(error.errors)
                                 .flat()
-                                .map((x) => (
-                                    <li className="text-danger">{x}</li>
-                                ))}
-                        </ul>
-                        <p className="text-danger">
-                            Either reload the page or try again
-                            <br /> If the problem persists, either try again or report this as a bug to the developers
-                        </p>
-                    </div>
-                )}
-            </div>
+                                .map((x) => <li className="text-danger">{x}</li>)}
+                        {isServerError && <li className="text-danger">Internal Server Error</li>}
+                    </ul>
+                    <p className="text-danger">
+                        Either reload the page or try again later.
+                        <br /> If the problem persists, you can notify the developers at{" "}
+                        <a href="mailto:nonexistantemail@doesntexist.net">nonexistantemail@doesntexist.net</a>
+                    </p>
+                </div>
+            )}
         </div>
     );
 }
