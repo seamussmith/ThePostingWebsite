@@ -16,15 +16,16 @@ public class ArticleController : ControllerBase
         this.logger = _logger;
     }
     [HttpPost]
-    public void PostArticle([FromForm] string Author, [FromForm] string Content, [FromForm] string Title, [FromForm] string? Tags)
+    public Article PostArticle([FromForm] string Author, [FromForm] string Content, [FromForm] string Title, [FromForm] string? Tags)
     {
-        articleContext.Articles.Add(new Article() {
+        var article = articleContext.Articles.Add(new Article() {
             Content = Content,
             Tags = Tags ?? "",
             Author = Author,
             Title = Title,
         });
         articleContext.SaveChanges();
+        return article.Entity;
     }
     [HttpGet("{id}")]
     public Article GetArticle(int id)
