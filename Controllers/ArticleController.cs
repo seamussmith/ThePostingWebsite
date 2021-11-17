@@ -25,6 +25,7 @@ public class ArticleController : ControllerBase
             Title = Title,
         });
         articleContext.SaveChanges();
+        Response.StatusCode = StatusCodes.Status201Created;
         return article.Entity;
     }
     [HttpGet("{id}")]
