@@ -7,6 +7,7 @@ import "./custom.css";
 import { Article } from "./components/Article";
 import { NotFound } from "./components/NotFound";
 import { NotImplemented } from "./components/NotImplemented";
+import { PostAnArticle } from "./components/PostAnArticle";
 
 export default class App extends Component {
     static displayName = App.name;
@@ -18,6 +19,7 @@ export default class App extends Component {
                 <Route exact path="/article/:id" component={Article} />
                 <Route exact path="/notfound" component={NotFound} />
                 <Route exact path="/notimplemented" component={NotImplemented} />
+                <Route exact path="/PostAnArticle" component={PostAnArticle} />
                 {/* <Route exact component={() => <Redirect to="/notfound" />} /> */}
             </Layout>
         );
