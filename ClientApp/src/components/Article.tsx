@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Redirect, useLocation, useParams } from "react-router";
 
 export function Article(props: {}) {
-    const [article, setArticle] = useState<any>([]);
+    const [article, setArticle] = useState<any>(null);
     const [error, setError] = useState(false);
     const location = useLocation();
     const { id } = useParams<{ id: string }>();
