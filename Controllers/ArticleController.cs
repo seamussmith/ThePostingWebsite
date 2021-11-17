@@ -16,7 +16,7 @@ public class ArticleController : ControllerBase
         this.logger = _logger;
     }
     [HttpPost]
-    public Article PostArticle([FromForm] string Author, [FromForm] string Content, [FromForm] string Title, [FromForm] string? Tags)
+    public ActionResult<Article> PostArticle([FromForm] string Author, [FromForm] string Content, [FromForm] string Title, [FromForm] string? Tags)
     {
         var article = articleContext.Articles.Add(new Article() {
             Content = Content,
@@ -25,8 +25,7 @@ public class ArticleController : ControllerBase
             Title = Title,
         });
         articleContext.SaveChanges();
-        Response.StatusCode = StatusCodes.Status201Created;
-        return article.Entity;
+        return new CreatedResult($"{Request.Path.Value}{article.Entity.Id}", article.Entity);
     }
     [HttpGet("{id}")]
     public Article GetArticle(int id)
