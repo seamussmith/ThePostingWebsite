@@ -40,7 +40,10 @@ public class ArticleController : ControllerBase
     [HttpDelete("{id}")]
     public ActionResult DeleteArticle(long id)
     {
-        articleContext.Articles.Remove(articleContext.Articles.Where(x => x.Id == id).First());
+        var article = articleContext.Articles.Where(x => x.Id == id).FirstOrDefault();
+        if (article is null)
+            return new NotFoundResult();
+        articleContext.Articles.Remove(article);
         articleContext.SaveChanges();
         return new OkResult();
     }
