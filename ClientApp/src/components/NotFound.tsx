@@ -2,10 +2,6 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 
 export function NotFound(params: {}) {
-    const [articles, setArticles] = useState<any>(null);
-    fetch("/api/article/?take=10")
-        .then((blob) => blob.json())
-        .then((articles) => setArticles(articles));
     return (
         <div>
             <h1>404! You're lost...</h1>
