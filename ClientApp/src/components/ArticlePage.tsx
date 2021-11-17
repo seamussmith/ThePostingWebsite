@@ -9,8 +9,14 @@ export function ArticlePage(props: {}) {
     const { id } = useParams<{ id: string }>();
     useEffect(() => {
         fetch(`/api/article/${id}`)
-            .then((blob) => blob.json())
-            .then((article: Article) => setArticle(article))
+            .then<Article>((blob) => {
+                if (blob.ok) {
+                    return blob.json();
+                } else {
+                    throw blob;
+                }
+            })
+            .then((article) => setArticle(article))
             .catch((x) => setError(true));
     }, [id]);
     return (
