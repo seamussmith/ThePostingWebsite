@@ -11,13 +11,21 @@ export function PostAnArticle({})
     const history = useHistory();
     async function submitArticle(e: React.FormEvent<HTMLFormElement>)
     {
-        // TODO: On submit success, redirect to article
-        console.log(author, title, tags, content);
         e.preventDefault();
+        // I hate typing
+        const _e = encodeURIComponent;
+        setDisabled(true);
+        const article = await fetch("/api/article/", {
+            method: "POST",
+            body: new URLSearchParams(`Title=${_e(title)}&Author=${_e(author)}&Tags=${_e(tags)}&Content=${_e(content)}`)
+        }).then(x => x.json())
+        setDisabled(false);
+        history.push(`/article/${article.id}`);
+        console.table(article)
     }
     return (
         <div>
-            <form action="/api/article/" onSubmit={submitArticle}>
+            <form onSubmit={submitArticle}>
                 <div>
                     <label htmlFor="Author">Author</label>
                     <input onChange={x => setAuthor(x.currentTarget.value)}name="Author" type="text" required disabled={disabled} />
