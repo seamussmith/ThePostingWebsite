@@ -1,4 +1,5 @@
 import React, { useState } from "react"
+import { useHistory, useLocation } from "react-router";
 
 export function PostAnArticle({})
 {
@@ -7,8 +8,10 @@ export function PostAnArticle({})
     const [title, setTitle] = useState("");
     const [tags, setTags] = useState("");
     const [content, setContent] = useState("");
+    const history = useHistory();
     async function submitArticle(e: React.FormEvent<HTMLFormElement>)
     {
+        // TODO: On submit success, redirect to article
         console.log(author, title, tags, content);
         e.preventDefault();
     }
