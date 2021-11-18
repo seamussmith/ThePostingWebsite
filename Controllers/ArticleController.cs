@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ThePostingWebsite.Data;
 using ThePostingWebsite.Models;
 
@@ -19,6 +20,15 @@ public class ArticleController : ControllerBase
     public ActionResult<Article> GetArticle(int id)
     {
         return articleContext.Articles.Where(x => x.Id == id).First();
+    }
+    [HttpGet("{id}/comments/")]
+    public ActionResult<List<Comment>> GetArticleComments(int id, [FromQuery] int Skip = 0, [FromQuery] int Take = 100)
+    {
+        var article = articleContext.Articles.Where(x => x.Id == id).FirstOrDefault();
+        if (article is null)
+            return new NotFoundResult();
+        articleContext.Entry(article).Collection(p => p.Comments).Load();
+        return article.Comments.OrderBy(x => x.Id).Skip(Skip).Take(Take).ToList();
     }
     [HttpGet]
     public IEnumerable<ArticleIndex> GetArticles([FromQuery] int Skip = 0, [FromQuery] int Take = 100)
