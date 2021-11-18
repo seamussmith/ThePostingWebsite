@@ -21,7 +21,7 @@ public class ArticleController : ControllerBase
     {
         return articleContext.Articles.Where(x => x.Id == id).First();
     }
-    [HttpGet("{id}/comments/")]
+    [HttpGet("{id}/comment/")]
     public ActionResult<List<Comment>> GetArticleComments(int id, [FromQuery] int Skip = 0, [FromQuery] int Take = 100)
     {
         var article = articleContext.Articles.Where(x => x.Id == id).FirstOrDefault();
@@ -49,6 +49,22 @@ public class ArticleController : ControllerBase
         });
         articleContext.SaveChanges();
         return new CreatedResult($"{Request.Path.Value}{article.Entity.Id}", article.Entity);
+    }
+    [HttpPost("{id}/comment/")]
+    public ActionResult<Comment> PostCommentOnArticle(int id, [FromForm] string Author, [FromForm] string Content)
+    {
+        var articleFetch = GetArticle(id);
+        if (articleFetch.Value is null)
+            return articleFetch.Result!;
+        var article = articleFetch.Value!;
+        articleContext.Entry(article).Collection(p => p.Comments).Load();
+        var comment = new Comment() {
+            Author = Author,
+            Content = Content
+        };
+        article.Comments.Add(comment);
+        articleContext.SaveChanges();
+        return comment;
     }
     [HttpDelete("{id}")]
     public ActionResult DeleteArticle(long id)
