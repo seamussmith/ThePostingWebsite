@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ThePostingWebsite.Data;
 using ThePostingWebsite.Models;
+using ThePostingWebsite.Extensions;
 
 namespace ThePostingWebsite.Controllers;
 
@@ -27,7 +28,7 @@ public class ArticleController : ControllerBase
         var article = articleContext.Articles.Where(x => x.Id == id).FirstOrDefault();
         if (article is null)
             return new NotFoundResult();
-        articleContext.Entry(article).Collection(p => p.Comments).Load();
+        articleContext.LoadEntity(article, x => x.Comments);
         return article.Comments.OrderBy(x => x.Id).Skip(Skip).Take(Take).ToList();
     }
     [HttpGet]
@@ -57,7 +58,7 @@ public class ArticleController : ControllerBase
         if (articleFetch.Value is null)
             return articleFetch.Result!;
         var article = articleFetch.Value!;
-        articleContext.Entry(article).Collection(p => p.Comments).Load();
+        articleContext.LoadEntity(article, x => x.Comments);
         var comment = new Comment() {
             Author = Author,
             Content = Content
