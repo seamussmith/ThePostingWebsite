@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import ReactMarkdown from "react-markdown";
 import { Redirect, useLocation, useParams } from "react-router";
 import {
     Button,
@@ -52,7 +53,7 @@ export function ArticlePage(props: {}) {
                 <>
                     <h1>{article.title}</h1>
                     <h5 className="text-muted text-subtitle">By {article.author}</h5>
-                    <p>{article.content}</p>
+                    <ReactMarkdown>{article.content}</ReactMarkdown>
                 </>
             )}
             <hr />
