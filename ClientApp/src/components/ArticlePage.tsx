@@ -102,7 +102,7 @@ function CommentForm({ onSuccess, id }: { onSuccess?: (comment: Comment) => void
                     <Input name="Author" type="text" required />
                     <Label htmlFor="Content"></Label>
                     <Input name="Content" required type="textarea" placeholder="What do you want to say?" />
-                    <Input type="submit" />
+                    <Input type="submit" color="secondary" />
                 </Form>
             </Collapse>
         </>
