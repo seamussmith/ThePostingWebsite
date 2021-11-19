@@ -1,6 +1,18 @@
 import { useEffect, useState } from "react";
 import { Redirect, useLocation, useParams } from "react-router";
-import { Button, Card, Container } from "reactstrap";
+import {
+    Button,
+    ButtonDropdown,
+    Card,
+    Collapse,
+    Container,
+    DropdownItem,
+    DropdownMenu,
+    DropdownToggle,
+    Form,
+    Input,
+    Label,
+} from "reactstrap";
 import { Article } from "../models/Article";
 import { Comment } from "../models/Comment";
 
@@ -44,6 +56,8 @@ export function ArticlePage(props: {}) {
                 </>
             )}
             <hr />
+            <CommentForm id={id} />
+            <hr />
             <h2>Comments:</h2>
             {comments?.map((c) => (
                 <div>
@@ -72,5 +86,25 @@ export function ArticlePage(props: {}) {
             )}
             {!error || <Redirect to="/notfound" />}
         </div>
+    );
+}
+
+function CommentForm({ onSuccess, id }: { onSuccess?: (comment: Comment) => void; id: string }) {
+    const [commentDropdownOpened, setCommentDropdownOpened] = useState(false);
+    return (
+        <>
+            <Button color="primary" onClick={() => setCommentDropdownOpened(!commentDropdownOpened)}>
+                Write a comment!
+            </Button>
+            <Collapse className="mt-2" isOpen={commentDropdownOpened}>
+                <Form action={`/api/article/${id}/comment/`} method="POST">
+                    <Label htmlFor="Author">Name:</Label>
+                    <Input name="Author" type="text" required />
+                    <Label htmlFor="Content"></Label>
+                    <Input name="Content" required type="textarea" placeholder="What do you want to say?" />
+                    <Input type="submit" />
+                </Form>
+            </Collapse>
+        </>
     );
 }
