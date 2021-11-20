@@ -13,11 +13,11 @@ export function AjaxForm(props: AjaxFormProps) {
     async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         await props.onSubmitStart?.();
-        let inputs = formRef.current!.querySelectorAll("input:not([type=submit])") as NodeListOf<HTMLInputElement>;
+        let inputs = formRef.current!.querySelectorAll("input:not([type=submit]), textarea") as NodeListOf<HTMLInputElement>;
         let submitButton = formRef.current!.querySelector("input[type=submit]:focus") as HTMLInputElement;
         let buildStr = "";
-        inputs.forEach((x) => (buildStr += encodeURIComponent(x.value) + "&"));
-        buildStr += submitButton.value;
+        inputs.forEach((x) => (buildStr += `${x.name}=${encodeURIComponent(x.value)}&`));
+        buildStr += submitButton?.value ?? "";
         let built = new URLSearchParams(buildStr);
         let response: Response;
         if (props.method != "GET")
