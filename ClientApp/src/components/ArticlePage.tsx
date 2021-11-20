@@ -11,6 +11,7 @@ import {
     DropdownMenu,
     DropdownToggle,
     Form,
+    FormGroup,
     Input,
     Label,
 } from "reactstrap";
@@ -98,12 +99,14 @@ function CommentForm({ onSuccess, id }: { onSuccess?: (comment: Comment) => void
                 Write a comment!
             </Button>
             <Collapse className="mt-2" isOpen={commentDropdownOpened}>
-                <Form action={`/api/article/${id}/comment/`} method="POST">
-                    <Label htmlFor="Author">Name:</Label>
-                    <Input name="Author" type="text" required />
+                <Form action={`/api/article/${id}/comment/`} method="POST" autoComplete="disabled">
+                    <Label htmlFor="Author">Name</Label>
+                    <Input name="Author" type="text" required autoComplete="disabled" />
                     <Label htmlFor="Content"></Label>
-                    <Input name="Content" required type="textarea" placeholder="What do you want to say?" />
-                    <Input type="submit" color="secondary" />
+                    <Input name="Content" required type="textarea" placeholder="What do you want to say?" autoComplete="disabled" />
+                    <Button className="mt-3" type="submit" color="success">
+                        Submit
+                    </Button>
                 </Form>
             </Collapse>
         </>
