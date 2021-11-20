@@ -20,7 +20,7 @@ public class ArticleController : ControllerBase
     [HttpGet("{id}")]
     public ActionResult<Article> GetArticle(int id)
     {
-        return articleContext.Articles.Where(x => x.Id == id).First();
+        return (ActionResult<Article>)articleContext.Articles.Where(x => x.Id == id).FirstOrDefault()! ?? new NotFoundResult();
     }
     [HttpGet("{id}/comment/")]
     public ActionResult<List<Comment>> GetArticleComments(int id, [FromQuery] int Skip = 0, [FromQuery] int Take = 100)
