@@ -57,11 +57,12 @@ public class ArticleController : ControllerBase
     [HttpPost("{id}/comment/")]
     public ActionResult<Comment> PostCommentOnArticle(int id, [FromForm] string Author, [FromForm] string Content)
     {
-        var articleFetch = GetArticle(id);
-        if (articleFetch.Value is null)
-            return articleFetch.Result!;
-        var article = articleFetch.Value!;
-        articleContext.LoadEntity(article, x => x.Comments);
+        var article = articleContext.Articles
+            .Where(x => x.Id == id)
+            .Include(x => x.Comments)
+            .FirstOrDefault();
+        if (article is null)
+            return new NotFoundResult();
         var comment = new Comment()
         {
             Author = Author,
