@@ -25,10 +25,12 @@ public class ArticleController : ControllerBase
     [HttpGet("{id}/comment/")]
     public ActionResult<List<Comment>> GetArticleComments(int id, [FromQuery] int Skip = 0, [FromQuery] int Take = 100)
     {
-        var article = articleContext.Articles.Where(x => x.Id == id).FirstOrDefault();
+        var article = articleContext.Articles
+            .Where(x => x.Id == id)
+            .Include(x => x.Comments)
+            .FirstOrDefault();
         if (article is null)
             return new NotFoundResult();
-        articleContext.LoadEntity(article, x => x.Comments);
         return article.Comments.OrderBy(x => x.Id).Skip(Skip).Take(Take).ToList();
     }
     [HttpGet]
@@ -42,7 +44,8 @@ public class ArticleController : ControllerBase
     [HttpPost]
     public ActionResult<Article> PostArticle([FromForm] string Author, [FromForm] string Content, [FromForm] string Title, [FromForm] string? Tags)
     {
-        var article = articleContext.Articles.Add(new Article() {
+        var article = articleContext.Articles.Add(new Article()
+        {
             Content = Content,
             Tags = Tags ?? "",
             Author = Author,
@@ -59,7 +62,8 @@ public class ArticleController : ControllerBase
             return articleFetch.Result!;
         var article = articleFetch.Value!;
         articleContext.LoadEntity(article, x => x.Comments);
-        var comment = new Comment() {
+        var comment = new Comment()
+        {
             Author = Author,
             Content = Content
         };
