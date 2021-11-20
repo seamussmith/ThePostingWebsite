@@ -17,6 +17,7 @@ import {
 } from "reactstrap";
 import { Article } from "../models/Article";
 import { Comment } from "../models/Comment";
+import { AjaxForm } from "./AjaxForm";
 
 export function ArticlePage(props: {}) {
     const [article, setArticle] = useState<Article | null>(null);
@@ -58,7 +59,7 @@ export function ArticlePage(props: {}) {
                 </>
             )}
             <hr />
-            <CommentForm id={id} />
+            <CommentForm id={id} onSuccess={(c) => setComments(comments?.concat(c) ?? null)} />
             <hr />
             <h2>Comments:</h2>
             {comments?.map((c) => (
@@ -93,21 +94,33 @@ export function ArticlePage(props: {}) {
 
 function CommentForm({ onSuccess, id }: { onSuccess?: (comment: Comment) => void; id: string }) {
     const [commentDropdownOpened, setCommentDropdownOpened] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
     return (
         <>
             <Button color="primary" onClick={() => setCommentDropdownOpened(!commentDropdownOpened)}>
                 Write a comment!
             </Button>
             <Collapse className="mt-2" isOpen={commentDropdownOpened}>
-                <Form action={`/api/article/${id}/comment/`} method="POST" autoComplete="disabled">
+                <AjaxForm
+                    action={`/api/article/${id}/comment/`}
+                    onSubmitStart={async () => {
+                        setSubmitting(true);
+                        // await new Promise<void>((resolve) => setTimeout(() => resolve(), 2000));
+                    }}
+                    onSubmitEnd={() => setSubmitting(false)}
+                    onSuccessResponse={async (res) => onSuccess?.(await res.json())}
+                    method="POST"
+                    autoComplete="disabled"
+                >
                     <Label htmlFor="Author">Name</Label>
                     <Input name="Author" type="text" required autoComplete="disabled" />
                     <Label htmlFor="Content"></Label>
                     <Input name="Content" required type="textarea" placeholder="What do you want to say?" autoComplete="disabled" />
-                    <Button className="mt-3" type="submit" color="success">
+                    <Button className="mt-3" type="submit" color={submitting ? "danger" : "success"}>
                         Submit
                     </Button>
-                </Form>
+                </AjaxForm>
+                {/* <Form action={`/api/article/${id}/comment/`} method="POST" autoComplete="disabled"></Form> */}
             </Collapse>
         </>
     );
