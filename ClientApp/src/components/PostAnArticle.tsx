@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useHistory, useLocation } from "react-router";
 import { Button, Form, FormGroup, Input, Label, Spinner } from "reactstrap";
 import { Article } from "../models/Article";
+import { wait } from "../util";
 import { AjaxForm } from "./AjaxForm";
 
 export function PostAnArticle({}) {
@@ -16,11 +17,11 @@ export function PostAnArticle({}) {
     return (
         <div>
             <AjaxForm
-                onSubmitStart={() => {
+                onSubmitStart={async () => {
                     setDisabled(true);
                     setError(null);
                     setIsServerError(false);
-                    // todo: add wait function
+                    await wait(Math.random() * 2000 + 500);
                 }}
                 onSubmitEnd={() => {
                     setDisabled(false);

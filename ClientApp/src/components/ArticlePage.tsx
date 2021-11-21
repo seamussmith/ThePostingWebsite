@@ -17,6 +17,7 @@ import {
 } from "reactstrap";
 import { Article } from "../models/Article";
 import { Comment } from "../models/Comment";
+import { wait } from "../util";
 import { AjaxForm } from "./AjaxForm";
 
 export function ArticlePage(props: {}) {
@@ -105,7 +106,7 @@ function CommentForm({ onSuccess, id }: { onSuccess?: (comment: Comment) => void
                     action={`/api/article/${id}/comment/`}
                     onSubmitStart={async () => {
                         setSubmitting(true);
-                        // await new Promise<void>((resolve) => setTimeout(() => resolve(), 2000));
+                        await wait(Math.random() * 2000 + 500);
                     }}
                     onSubmitEnd={() => setSubmitting(false)}
                     onSuccessResponse={async (res) => onSuccess?.(await res.json())}
