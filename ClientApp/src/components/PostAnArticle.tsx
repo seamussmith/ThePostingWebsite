@@ -35,23 +35,24 @@ export function PostAnArticle({}) {
                 onSuccessResponse={(r) => r.json().then((a: Article) => history.push(`/article/${a.id}`))}
                 action="/api/article/"
                 method="POST"
+                autoComplete="off"
             >
-                <FormGroup className="mb-3" autocomplete="off">
+                <FormGroup className="mb-3">
                     <FormGroup>
                         <Label htmlFor="Author">Author</Label>
-                        <Input name="Author" type="text" autocomplete="off" required disabled={disabled} />
+                        <Input name="Author" type="text" required disabled={disabled} />
                     </FormGroup>
                     <FormGroup>
                         <Label htmlFor="Title">Title</Label>
-                        <Input name="Title" type="text" autocomplete="off" required disabled={disabled} />
+                        <Input name="Title" type="text" required disabled={disabled} />
                     </FormGroup>
                     <FormGroup>
                         <Label htmlFor="Tags">Tags</Label>
-                        <Input name="Tags" type="text" autocomplete="off" disabled={disabled} />
+                        <Input name="Tags" type="text" disabled={disabled} />
                     </FormGroup>
                     <FormGroup>
                         <Label htmlFor="Content">Content</Label>
-                        <Input name="Content" type="textarea" autocomplete="off" required disabled={disabled} />
+                        <Input name="Content" type="textarea" required disabled={disabled} />
                     </FormGroup>
                 </FormGroup>
                 <FormGroup>
