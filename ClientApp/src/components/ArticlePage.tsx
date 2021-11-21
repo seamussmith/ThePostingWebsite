@@ -14,6 +14,7 @@ import {
     FormGroup,
     Input,
     Label,
+    Spinner,
 } from "reactstrap";
 import { Article } from "../models/Article";
 import { Comment } from "../models/Comment";
@@ -117,8 +118,15 @@ function CommentForm({ onSuccess, id }: { onSuccess?: (comment: Comment) => void
                     <Input name="Author" type="text" required autoComplete="disabled" />
                     <Label htmlFor="Content"></Label>
                     <Input name="Content" required type="textarea" placeholder="What do you want to say?" autoComplete="disabled" />
-                    <Button className="mt-3" type="submit" color={submitting ? "danger" : "success"}>
-                        Submit
+                    <Button className="mt-3 d-flex align-items-center" type="submit" color="success">
+                        {submitting ? (
+                            <>
+                                <Spinner className="m-1" animation="border" size="sm" children />
+                                Submitting...
+                            </>
+                        ) : (
+                            <>Submit</>
+                        )}
                     </Button>
                 </AjaxForm>
                 {/* <Form action={`/api/article/${id}/comment/`} method="POST" autoComplete="disabled"></Form> */}
