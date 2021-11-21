@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { Form, FormProps } from "reactstrap";
 
 interface AjaxFormProps extends React.FormHTMLAttributes<HTMLFormElement> {
@@ -13,8 +13,10 @@ interface AjaxFormProps extends React.FormHTMLAttributes<HTMLFormElement> {
 
 export function AjaxForm(props: AjaxFormProps) {
     var formRef = useRef<HTMLFormElement>(null);
+    const [disabled, setDisabled] = useState(false);
     async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
+        setDisabled(true);
         let buildStr = Array.from(new FormData(formRef.current!).entries()).reduce(
             (a, b) => a + `${encodeURIComponent(b[0])}=${encodeURIComponent(b[1] as string)}&`,
             ""
@@ -43,7 +45,12 @@ export function AjaxForm(props: AjaxFormProps) {
         else if (response.status <= 599) props.onServerErrorResponse?.(response);
         else throw new Error("what");
         await props.onSubmitEnd?.();
+        setDisabled(false);
     }
 
-    return <form {...props} onSubmit={onSubmit} ref={formRef} />;
+    return (
+        <form {...props} onSubmit={onSubmit} ref={formRef}>
+            <fieldset disabled={disabled}>{props.children}</fieldset>
+        </form>
+    );
 }

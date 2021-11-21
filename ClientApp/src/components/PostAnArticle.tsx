@@ -7,7 +7,7 @@ import { AjaxForm } from "./AjaxForm";
 
 export function PostAnArticle({}) {
     // Set to true when submitting the article
-    const [disabled, setDisabled] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<Record<any, any> | null>(null);
     const [isServerError, setIsServerError] = useState(false);
     // Form Input values
@@ -18,13 +18,13 @@ export function PostAnArticle({}) {
         <div>
             <AjaxForm
                 onSubmitStart={async () => {
-                    setDisabled(true);
+                    setIsSubmitting(true);
                     setError(null);
                     setIsServerError(false);
                     await wait(Math.random() * 2000 + 500);
                 }}
                 onSubmitEnd={() => {
-                    setDisabled(false);
+                    setIsSubmitting(false);
                 }}
                 onClientErrorResponse={async (r) => {
                     setError(await r.json());
@@ -41,24 +41,24 @@ export function PostAnArticle({}) {
                 <FormGroup className="mb-3">
                     <FormGroup>
                         <Label htmlFor="Author">Author</Label>
-                        <Input name="Author" type="text" required disabled={disabled} />
+                        <Input name="Author" type="text" required />
                     </FormGroup>
                     <FormGroup>
                         <Label htmlFor="Title">Title</Label>
-                        <Input name="Title" type="text" required disabled={disabled} />
+                        <Input name="Title" type="text" required />
                     </FormGroup>
                     <FormGroup>
                         <Label htmlFor="Tags">Tags</Label>
-                        <Input name="Tags" type="text" disabled={disabled} />
+                        <Input name="Tags" type="text" />
                     </FormGroup>
                     <FormGroup>
                         <Label htmlFor="Content">Content</Label>
-                        <Input name="Content" type="textarea" required disabled={disabled} />
+                        <Input name="Content" type="textarea" required />
                     </FormGroup>
                 </FormGroup>
                 <FormGroup>
                     <Button className="d-flex align-items-center justify-content-center" color="primary" size="lg" type="submit">
-                        {disabled ? (
+                        {isSubmitting ? (
                             <>
                                 <Spinner className="m-1" animation="border" size="sm" children />
                                 Submitting Article...
