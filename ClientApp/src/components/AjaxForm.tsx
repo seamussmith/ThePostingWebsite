@@ -25,12 +25,14 @@ export function AjaxForm(props: AjaxFormProps) {
         // Setup request object
         let request: Promise<Response>;
         // Any methods other than get send the query string through the body
-        if (props.method != "GET")
+        if (props.method != "GET" && props.method != null) {
             request = fetch(props.action as string, {
                 method: props.method,
                 body: built,
             });
-        else request = fetch(props.action + "?" + buildStr);
+        } else {
+            request = fetch(props.action + "?" + buildStr);
+        }
         // Await the response and onSubmitStart at the same time, so if request takes longer than onSubmitStart, it wont add time to the overall submition
         let [response] = await Promise.all([request, props.onSubmitStart?.()]);
         // Call the right function for the right response
