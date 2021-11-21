@@ -25,13 +25,17 @@ public class ArticleController : ControllerBase
     [HttpGet("{id}/comment/")]
     public ActionResult<List<Comment>> GetArticleComments(int id, [FromQuery] int Skip = 0, [FromQuery] int Take = 100)
     {
-        var article = articleContext.Articles
+        return (
+            (ActionResult<List<Comment>>)articleContext.Articles
             .Where(x => x.Id == id)
             .Include(x => x.Comments)
-            .FirstOrDefault();
-        if (article is null)
-            return new NotFoundResult();
-        return article.Comments.OrderBy(x => x.Id).Skip(Skip).Take(Take).ToList();
+            .FirstOrDefault() // Get the article (null if not found)
+            ?.Comments
+            .OrderByDescending(x => x.Id) // Get it's comments
+            .Skip(Skip)
+            .Take(Take)
+            .ToList()!
+        ) ?? new NotFoundResult();
     }
     [HttpGet]
     public IEnumerable<ArticleIndex> GetArticles([FromQuery] int Skip = 0, [FromQuery] int Take = 100)
