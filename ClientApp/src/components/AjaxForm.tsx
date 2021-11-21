@@ -16,17 +16,27 @@ export function AjaxForm(props: AjaxFormProps) {
     async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         // Find every input that isnt a submit button
-        let inputs = formRef.current!.querySelectorAll(
-            "input:not([type=submit], [type=radio], [type=checkbox]), textarea"
-        ) as NodeListOf<HTMLInputElement>;
-        let checkInputs = formRef.current!.querySelectorAll("input[type=radio], input[type=checkbox]") as NodeListOf<HTMLInputElement>;
+        let inputs = Array.from(
+            formRef.current!.querySelectorAll(
+                "input:not([type=submit], [type=radio], [type=checkbox]), textarea"
+            ) as NodeListOf<HTMLInputElement>
+        );
+        let checkInputs = Array.from(
+            formRef.current!.querySelectorAll("input[type=radio], input[type=checkbox]") as NodeListOf<HTMLInputElement>
+        );
         // Find the submit button that was clicked
         let submitButton = formRef.current!.querySelector("input[type=submit]:focus") as HTMLInputElement;
 
         // Reduce all the inputs to a key value query string
-        let buildStr = Array.from(inputs).reduce((a, b) => a + `${b.name}=${encodeURIComponent(b.value)}&`, "");
-        buildStr = Array.from(checkInputs).reduce((a, b) => {
-            if (b.checked && b.name != null) {
+        let buildStr = inputs.reduce((a, b) => {
+            if (b.name) {
+                return a + `${b.name}=${encodeURIComponent(b.value)}&`;
+            } else {
+                return a;
+            }
+        }, "");
+        buildStr = checkInputs.reduce((a, b) => {
+            if (b.checked && b.name) {
                 return a + `${b.name}=${encodeURIComponent(b.value ?? "on")}&`;
             } else {
                 return a;
