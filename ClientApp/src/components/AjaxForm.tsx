@@ -15,38 +15,10 @@ export function AjaxForm(props: AjaxFormProps) {
     var formRef = useRef<HTMLFormElement>(null);
     async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
-        // Find every input that isnt a submit button
-        let inputs = Array.from(
-            formRef.current!.querySelectorAll(
-                "input:not([type=submit], [type=radio], [type=checkbox]), textarea"
-            ) as NodeListOf<HTMLInputElement>
+        let buildStr = Array.from(new FormData(formRef.current!).entries()).reduce(
+            (a, b) => a + `${encodeURIComponent(b[0])}=${encodeURIComponent(b[1] as string)}&`,
+            ""
         );
-        let checkInputs = Array.from(
-            formRef.current!.querySelectorAll("input[type=radio], input[type=checkbox]") as NodeListOf<HTMLInputElement>
-        );
-        // Find the submit button that was clicked
-        let submitButton = formRef.current!.querySelector("input[type=submit]:focus") as HTMLInputElement;
-
-        // Reduce all the inputs to a key value query string
-        let buildStr = inputs.reduce((a, b) => {
-            if (b.name) {
-                return a + `${b.name}=${encodeURIComponent(b.value)}&`;
-            } else {
-                return a;
-            }
-        }, "");
-        buildStr = checkInputs.reduce((a, b) => {
-            if (b.checked && b.name) {
-                return a + `${b.name}=${encodeURIComponent(b.value ?? "on")}&`;
-            } else {
-                return a;
-            }
-        }, buildStr);
-        // Add the submit buttons value
-        if (submitButton.name) {
-            // Value should default to submit, just like a normal form
-            buildStr += `${submitButton.name}=${submitButton.value ?? "Submit"}`;
-        }
 
         let built = new URLSearchParams(buildStr);
 
