@@ -38,12 +38,13 @@ public class ArticleController : ControllerBase
         ) ?? new NotFoundResult();
     }
     [HttpGet]
-    public IEnumerable<ArticleIndex> GetArticles([FromQuery] int Skip = 0, [FromQuery] int Take = 100)
+    public ActionResult<List<ArticleIndex>> GetArticles([FromQuery] int Skip = 0, [FromQuery] int Take = 100)
     {
         return articleContext.Articles.OrderByDescending(x => x.Id)
             .Skip(Skip)
             .Take(Take)
-            .Select(x => new ArticleIndex(x.Id, x.Title, x.Author));
+            .Select(x => new ArticleIndex(x.Id, x.Title, x.Author))
+            .ToList();
     }
     [HttpPost]
     public ActionResult<Article> PostArticle([FromForm] string Author, [FromForm] string Content, [FromForm] string Title, [FromForm] string? Tags)
