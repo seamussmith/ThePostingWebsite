@@ -1,4 +1,0 @@
-GET https://localhost:44469/api/article/2
-content-type: application/x-www-form-urlencoded
-
-Title=My Favorite Dog&Author=Bobson Greg&Content=My favorite dog is currently the dog that barks it is a very fun dog that very dogs it should be dog of the year 10 tenths very god dog
