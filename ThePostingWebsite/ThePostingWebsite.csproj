@@ -15,6 +15,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <!-- Add this stupid configuration to have dotnet watch not be a dumbass and use hot reload -->
+    <ProjectCapability Include="AspNetCore" />
+    <!-- Spoiler alert: dotnet watch is still being a dumbass -->
     <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="6.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
