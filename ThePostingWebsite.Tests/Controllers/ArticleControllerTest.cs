@@ -41,6 +41,7 @@ public class ArticleControllerTest
             var articleController = new ArticleController(context, logger);
             var res = articleController.GetArticles();
             // Value should not be null
+            Assert.NotNull(res.Value);
             Assert.True(res.Value!.Count == articleCount);
         }
     }
