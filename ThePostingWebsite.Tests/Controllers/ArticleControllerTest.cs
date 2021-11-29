@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using ThePostingWebsite.Models;
 using Xunit.Abstractions;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ThePostingWebsite.Tests.Controllers;
 
@@ -17,14 +18,14 @@ public class ArticleControllerTest
     {
         output = _output;
     }
-    private DbContextOptions<ArticleContext> makeMockDB(int count = 10)
+    private DbContextOptions<ArticleContext> makeMockDB(int postCount = 0, int commentCount = 0)
     {
         var options = new DbContextOptionsBuilder<ArticleContext>()
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
         using (var init = new ArticleContext(options))
         {
-            Enumerable.Range(1, count).ToList().ForEach(
+            Enumerable.Range(1, postCount).ToList().ForEach(
                 x => init.Add(new Article()
                 {
                     Author = "mock",
@@ -36,10 +37,10 @@ public class ArticleControllerTest
             init.SaveChanges();
             foreach (var x in init.Articles.Include(x => x.Comments))
             {
-                Enumerable.Range(1, count).ToList().ForEach(
+                Enumerable.Range(1, postCount).ToList().ForEach(
                     y => x.Comments.Add(new Comment()
                     {
-                        Author= "mock",
+                        Author = "mock",
                         Content = "mock"
                     })
                 );
@@ -82,20 +83,20 @@ public class ArticleControllerTest
     [Fact]
     public void ArticleController_GetArticleComments_ShouldReturnComments()
     {
-        var articleCount = 10;
-        var options = makeMockDB(articleCount);
+        var commentCount = 10;
+        var options = makeMockDB(commentCount: commentCount);
         using (var context = new ArticleContext(options))
         {
             var articleController = makeArticleController(context);
             var res = articleController.GetArticleComments(1);
             Assert.NotNull(res.Value);
-            Assert.Equal(articleCount, res.Value!.Count);
+            Assert.Equal(commentCount, res.Value!.Count);
         }
     }
     [Fact]
     public void Articlecontroller_PostArticle_ShouldPostTheArticle()
     {
-        var options = makeMockDB(0);
+        var options = makeMockDB();
         using (var context = new ArticleContext(options))
         {
             var articleController = makeArticleController(context);
@@ -104,10 +105,18 @@ public class ArticleControllerTest
                 Content: "mock",
                 Title: "mock",
                 Tags: "mock"
-            );
-            Assert.NotNull(res.Result);
-            var resget = articleController.GetArticle(0);
-            Assert.NotNull(resget.Value);
+            ).Result as CreatedResult;
+            // NULL CHECKER WHY MUST YOU MAKE ME !!!!11!!!1!1!!1!!!!!111!!11!!!11
+            Assert.NotNull(res);
+            Assert.NotNull(res!.Value);
+            var createdObject = (res!.Value as Article)!;
+            var resget = articleController.GetArticle(createdObject.Id);
+            Assert.True(resget.Value == createdObject);
         }
+    }
+    [Fact]
+    public void ArticleController_PostCommentOnArticle_ShouldPostACommentOnAnArticle()
+    {
+
     }
 }
