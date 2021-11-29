@@ -34,10 +34,8 @@ public class ArticleControllerTest
                 })
             );
             init.SaveChanges();
-            var i = 0;
             foreach (var x in init.Articles.Include(x => x.Comments))
             {
-                ++i;
                 Enumerable.Range(1, count).ToList().ForEach(
                     y => x.Comments.Add(new Comment()
                     {
@@ -46,7 +44,6 @@ public class ArticleControllerTest
                     })
                 );
             }
-            output.WriteLine(count.ToString());
             init.SaveChanges();
         }
         return options;
