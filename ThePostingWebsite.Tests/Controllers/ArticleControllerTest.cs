@@ -37,7 +37,7 @@ public class ArticleControllerTest
             init.SaveChanges();
             foreach (var x in init.Articles.Include(x => x.Comments))
             {
-                Enumerable.Range(1, postCount).ToList().ForEach(
+                Enumerable.Range(1, commentCount).ToList().ForEach(
                     y => x.Comments.Add(new Comment()
                     {
                         Author = "mock",
@@ -84,7 +84,7 @@ public class ArticleControllerTest
     public void ArticleController_GetArticleComments_ShouldReturnComments()
     {
         var commentCount = 10;
-        var options = makeMockDB(commentCount: commentCount);
+        var options = makeMockDB(postCount: 1, commentCount: commentCount);
         using (var context = new ArticleContext(options))
         {
             var articleController = makeArticleController(context);
@@ -107,8 +107,7 @@ public class ArticleControllerTest
                 Tags: "mock"
             ).Result as CreatedResult;
             // NULL CHECKER WHY MUST YOU MAKE ME !!!!11!!!1!1!!1!!!!!111!!11!!!11
-            Assert.NotNull(res);
-            Assert.NotNull(res!.Value);
+            Assert.IsType<CreatedResult>(res);
             var createdObject = (res!.Value as Article)!;
             var resget = articleController.GetArticle(createdObject.Id);
             Assert.True(resget.Value == createdObject);
@@ -117,6 +116,23 @@ public class ArticleControllerTest
     [Fact]
     public void ArticleController_PostCommentOnArticle_ShouldPostACommentOnAnArticle()
     {
-
+        using (var context = new ArticleContext(makeMockDB(1)))
+        {
+            var articleController = makeArticleController(context);
+            var res = articleController.PostCommentOnArticle(1, "mock", "mock");
+            Assert.NotNull(res.Value);
+            // Cannot get the comment as of yet. TODO: Test that
+        }
+    }
+    [Fact]
+    public void ArticleController_DeleteArticle_ShouldDeleteTheArticle()
+    {
+        using (var context = new ArticleContext(makeMockDB(1)))
+        {
+            var articleController = makeArticleController(context);
+            var res = articleController.DeleteArticle(1);
+            Assert.IsType<OkResult>(res);
+            Assert.Empty(context.Articles);
+        }
     }
 }
