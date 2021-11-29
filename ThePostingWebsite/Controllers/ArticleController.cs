@@ -57,7 +57,7 @@ public class ArticleController : ControllerBase
             Title = Title,
         });
         articleContext.SaveChanges();
-        return new CreatedResult($"{Request.Path.Value}{article.Entity.Id}", article.Entity);
+        return new CreatedResult($"{Request?.Path.Value}{article.Entity.Id}", article.Entity);
     }
     [HttpPost("{id}/comment/")]
     public ActionResult<Comment> PostCommentOnArticle(int id, [FromForm] string Author, [FromForm] string Content)

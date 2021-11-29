@@ -92,4 +92,22 @@ public class ArticleControllerTest
             Assert.Equal(articleCount, res.Value!.Count);
         }
     }
+    [Fact]
+    public void Articlecontroller_PostArticle_ShouldPostTheArticle()
+    {
+        var options = makeMockDB(0);
+        using (var context = new ArticleContext(options))
+        {
+            var articleController = makeArticleController(context);
+            var res = articleController.PostArticle(
+                Author: "mock",
+                Content: "mock",
+                Title: "mock",
+                Tags: "mock"
+            );
+            Assert.NotNull(res.Result);
+            var resget = articleController.GetArticle(0);
+            Assert.NotNull(resget.Value);
+        }
+    }
 }
