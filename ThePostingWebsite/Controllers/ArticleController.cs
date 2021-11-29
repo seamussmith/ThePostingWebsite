@@ -18,12 +18,12 @@ public class ArticleController : ControllerBase
         this.logger = _logger;
     }
     [HttpGet("{id}")]
-    public ActionResult<Article> GetArticle(int id)
+    public ActionResult<Article> GetArticle(long id)
     {
         return (ActionResult<Article>)articleContext.Articles.Where(x => x.Id == id).FirstOrDefault()! ?? new NotFoundResult();
     }
     [HttpGet("{id}/comment/")]
-    public ActionResult<List<Comment>> GetArticleComments(int id, [FromQuery] int Skip = 0, [FromQuery] int Take = 100)
+    public ActionResult<List<Comment>> GetArticleComments(long id, [FromQuery] int Skip = 0, [FromQuery] int Take = 100)
     {
         return (
             (ActionResult<List<Comment>>)articleContext.Articles
@@ -60,7 +60,7 @@ public class ArticleController : ControllerBase
         return new CreatedResult($"{Request?.Path.Value}{article.Entity.Id}", article.Entity);
     }
     [HttpPost("{id}/comment/")]
-    public ActionResult<Comment> PostCommentOnArticle(int id, [FromForm] string Author, [FromForm] string Content)
+    public ActionResult<Comment> PostCommentOnArticle(long id, [FromForm] string Author, [FromForm] string Content)
     {
         var article = articleContext.Articles
             .Where(x => x.Id == id)
