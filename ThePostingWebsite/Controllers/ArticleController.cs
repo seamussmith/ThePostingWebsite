@@ -22,6 +22,16 @@ public class ArticleController : ControllerBase
     {
         return (ActionResult<Article>)articleContext.Articles.Where(x => x.Id == id).FirstOrDefault()! ?? new NotFoundResult();
     }
+    [HttpGet("random")]
+    public ActionResult GetRandomArticle()
+    {
+        var article = articleContext.Articles
+                .OrderByDescending(x => x.Id)
+                .Take(10)
+                .AsEnumerable()
+                .ElementAt(Random.Shared.Next(0, Math.Min(articleContext.Articles.Count(), 10)));
+        return new RedirectResult($"/article/{article.Id}");
+    }
     [HttpGet("{id}/comment/")]
     public ActionResult<List<Comment>> GetArticleComments(long id, [FromQuery] int Skip = 0, [FromQuery] int Take = 100)
     {

@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { Article } from "../models/Article";
 
 export function NotFound(params: {}) {
     return (
@@ -11,7 +12,7 @@ export function NotFound(params: {}) {
                     Go to the <Link to="/">Home Page</Link>
                 </li>
                 <li>
-                    Why not read a <Link to="/notimplemented">random article?</Link>
+                    Why not read a <a href="/api/article/random">random article?</a>
                 </li>
             </ul>
         </div>
