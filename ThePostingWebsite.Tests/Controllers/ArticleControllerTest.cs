@@ -135,4 +135,23 @@ public class ArticleControllerTest
             Assert.Empty(context.Articles);
         }
     }
+    [Fact]
+    public void ArticleController_PutArticle_ShouldEditTheArticle()
+    {
+        using (var context = new ArticleContext(makeMockDB()))
+        {
+            context.Add(new Article()
+            {
+                Author = "mock",
+                Content = "mock",
+                Title = "mock",
+                Tags = "mock"
+            });
+            context.SaveChanges();
+            var con = makeArticleController(context);
+            var res = con.PutArticle(1, "content");
+            var res2 = con.GetArticle(1);
+            Assert.Equal(res.Value!.Content, res2.Value!.Content);
+        }
+    }
 }

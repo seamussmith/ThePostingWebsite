@@ -87,6 +87,20 @@ public class ArticleController : ControllerBase
         articleContext.SaveChanges();
         return comment;
     }
+    [HttpPut("{id}")]
+    public ActionResult<Article> PutArticle(long id, [FromForm] string Content)
+    {
+        var article = articleContext.Articles.Where(x => x.Id == id).FirstOrDefault();
+        if (article is null)
+            return new NotFoundResult();
+        var newArticle = article with
+        {
+            Content = Content
+        };
+        articleContext.Remove(article);
+        articleContext.Add(newArticle);
+        return newArticle;
+    }
     [HttpDelete("{id}")]
     public ActionResult DeleteArticle(long id)
     {
