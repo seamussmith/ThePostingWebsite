@@ -61,7 +61,7 @@ export function ArticlePage(props: {}) {
                 </>
             )}
             <hr />
-            <CommentForm id={id} onSuccess={(c) => setComments(comments?.concat(c) ?? null)} />
+            <CommentForm id={id} onSuccess={(c) => setComments([c].concat(comments ?? []) ?? null)} />
             <hr />
             <h2>Comments:</h2>
             {comments?.map((c) => (
