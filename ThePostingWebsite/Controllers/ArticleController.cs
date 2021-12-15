@@ -99,6 +99,7 @@ public class ArticleController : ControllerBase
         };
         articleContext.Remove(article);
         articleContext.Add(newArticle);
+        articleContext.SaveChanges();
         return newArticle;
     }
     [HttpDelete("{id}")]
