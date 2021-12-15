@@ -138,7 +138,8 @@ public class ArticleControllerTest
     [Fact]
     public void ArticleController_PutArticle_ShouldEditTheArticle()
     {
-        using (var context = new ArticleContext(makeMockDB()))
+        var opt = makeMockDB();
+        using (var context = new ArticleContext(opt))
         {
             context.Add(new Article()
             {
@@ -150,8 +151,12 @@ public class ArticleControllerTest
             context.SaveChanges();
             var con = makeArticleController(context);
             var res = con.PutArticle(1, "content");
-            var res2 = con.GetArticle(1);
-            Assert.Equal(res.Value!.Content, res2.Value!.Content);
+            using (var newCtx = new ArticleContext(opt))
+            {
+                var con2 = makeArticleController(newCtx);
+                var res2 = con.GetArticle(1);
+                Assert.Equal(res.Value!.Content, res2.Value!.Content);
+            }
         }
     }
 }
