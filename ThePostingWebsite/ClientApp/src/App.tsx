@@ -8,6 +8,7 @@ import { ArticlePage } from "./components/ArticlePage";
 import { NotFound } from "./components/NotFound";
 import { NotImplemented } from "./components/NotImplemented";
 import { PostAnArticle } from "./components/PostAnArticle";
+import { EditArticle } from "./components/EditArticle";
 
 export default class App extends Component {
     static displayName = App.name;
@@ -21,6 +22,7 @@ export default class App extends Component {
                     <Route exact path="/notfound" component={NotFound} />
                     <Route exact path="/notimplemented" component={NotImplemented} />
                     <Route exact path="/PostAnArticle" component={PostAnArticle} />
+                    <Route exact path="/edit/:id" component={EditArticle} />
                     <Route exact component={() => <Redirect to="/notfound" />} />
                 </Switch>
             </Layout>
