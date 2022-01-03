@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { Redirect, useLocation, useParams } from "react-router";
+import { Link } from "react-router-dom";
 import {
     Button,
     ButtonDropdown,
@@ -61,6 +62,7 @@ export function ArticlePage(props: {}) {
                 </>
             )}
             <hr />
+            <Link to={`/edit/${id}`} className="btn btn-success mr-1" role="button">Edit Article</Link>
             <CommentForm id={id} onSuccess={(c) => setComments([c].concat(comments ?? []) ?? null)} />
             <hr />
             <h2>Comments:</h2>
