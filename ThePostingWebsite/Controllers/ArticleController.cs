@@ -20,7 +20,7 @@ public class ArticleController : ControllerBase
     [HttpGet("{id}")]
     public ActionResult<Article> GetArticle(long id)
     {
-        return (ActionResult<Article>)articleContext.Articles.Where(x => x.Id == id).FirstOrDefault()! ?? new NotFoundResult();
+        return (ActionResult<Article>) Ok(articleContext.Articles.Where(x => x.Id == id).FirstOrDefault()!) ?? NotFound();
     }
     [HttpGet("random")]
     public ActionResult GetRandomArticle()
@@ -30,13 +30,13 @@ public class ArticleController : ControllerBase
                 .Take(10)
                 .AsEnumerable()
                 .ElementAt(Random.Shared.Next(0, Math.Min(articleContext.Articles.Count(), 10)));
-        return new RedirectResult($"/article/{article.Id}");
+        return Redirect($"/article/{article.Id}");
     }
     [HttpGet("{id}/comment/")]
     public ActionResult<List<Comment>> GetArticleComments(long id, [FromQuery] int Skip = 0, [FromQuery] int Take = 100)
     {
-        return (
-            (ActionResult<List<Comment>>)articleContext.Articles
+        return ((ActionResult<List<Comment>>)
+            Ok(articleContext.Articles
             .Where(x => x.Id == id)
             .Include(x => x.Comments)
             .FirstOrDefault() // Get the article (null if not found)
@@ -44,8 +44,8 @@ public class ArticleController : ControllerBase
             .OrderByDescending(x => x.Id) // Get it's comments
             .Skip(Skip)
             .Take(Take)
-            .ToList()!
-        ) ?? new NotFoundResult();
+            .ToList()!)
+        ) ?? NotFound();
     }
     [HttpGet]
     public ActionResult<List<ArticleIndex>> GetArticles([FromQuery] int Skip = 0, [FromQuery] int Take = 100)
@@ -67,7 +67,7 @@ public class ArticleController : ControllerBase
             Title = Title,
         });
         articleContext.SaveChanges();
-        return new CreatedResult($"{Request?.Path.Value}{article.Entity.Id}", article.Entity);
+        return Created($"{Request?.Path.Value}{article.Entity.Id}", article.Entity);
     }
     [HttpPost("{id}/comment/")]
     public ActionResult<Comment> PostCommentOnArticle(long id, [FromForm] string Author, [FromForm] string Content)
@@ -77,7 +77,7 @@ public class ArticleController : ControllerBase
             .Include(x => x.Comments)
             .FirstOrDefault();
         if (article is null)
-            return new NotFoundResult();
+            return NotFound();
         var comment = new Comment()
         {
             Author = Author,
@@ -92,7 +92,7 @@ public class ArticleController : ControllerBase
     {
         var article = articleContext.Articles.Where(x => x.Id == id).FirstOrDefault();
         if (article is null)
-            return new NotFoundResult();
+            return NotFound();
         var newArticle = article with
         {
             Content = Content
@@ -107,9 +107,9 @@ public class ArticleController : ControllerBase
     {
         var article = articleContext.Articles.Where(x => x.Id == id).FirstOrDefault();
         if (article is null)
-            return new NotFoundResult();
+            return NotFound();
         articleContext.Articles.Remove(article);
         articleContext.SaveChanges();
-        return new OkResult();
+        return Ok();
     }
 }
