@@ -8,6 +8,7 @@ import MDEditor from "@uiw/react-md-editor";
 export function EditArticle({}) {
     const params = useParams<{ id: string }>();
     const history = useHistory();
+    const [loading, setLoading] = useState(true);
     const [article, setArticle] = useState<Article | null>(null);
     const [contentFieldText, setContentFieldText] = useState("");
     useEffect(() => {
@@ -16,6 +17,7 @@ export function EditArticle({}) {
             .then((x) => {
                 setArticle(article);
                 setContentFieldText(x.content);
+                setLoading(false);
             });
     }, []);
 
@@ -24,7 +26,9 @@ export function EditArticle({}) {
             <AjaxForm method="PUT" action={`api/article/${params.id}`} onSuccessResponse={() => history.push(`/article/${params.id}`)}>
                 <FormGroup>
                     <Label htmlFor="Content">Content</Label>
-                    <MDEditor value={contentFieldText} onChange={(x) => setContentFieldText(x ?? "")} height={25 * 25}></MDEditor>
+                    {!loading && (
+                        <MDEditor value={contentFieldText} onChange={(x) => setContentFieldText(x ?? "")} height={25 * 25}></MDEditor>
+                    )}
                     <input type="hidden" name="Content" value={contentFieldText} />
                 </FormGroup>
                 <FormGroup className="mt-1">
