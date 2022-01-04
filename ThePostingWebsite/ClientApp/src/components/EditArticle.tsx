@@ -28,7 +28,7 @@ export function EditArticle({}) {
                     <input type="hidden" name="Content" value={contentFieldText} />
                 </FormGroup>
                 <FormGroup className="mt-1">
-                    <Button type="submit">Edit</Button>
+                    <Button type="submit">Submit Changes</Button>
                 </FormGroup>
             </AjaxForm>
         </div>
