@@ -3,6 +3,7 @@ import { useHistory, useLocation, useParams } from "react-router-dom";
 import { Button, FormGroup, Input, Label } from "reactstrap";
 import { Article } from "../models/Article";
 import { AjaxForm } from "./AjaxForm";
+import MDEditor from "@uiw/react-md-editor";
 
 export function EditArticle({}) {
     const params = useParams<{ id: string }>();
@@ -23,17 +24,8 @@ export function EditArticle({}) {
             <AjaxForm method="PUT" action={`api/article/${params.id}`} onSuccessResponse={() => history.push(`/article/${params.id}`)}>
                 <FormGroup>
                     <Label htmlFor="Content">Content</Label>
-                    <Input
-                        name="Content"
-                        type="textarea"
-                        rows={(contentFieldText.match(/\n/g)?.length ?? 0) + 1}
-                        style={{
-                            resize: "none"
-                        }}
-                        required
-                        value={contentFieldText}
-                        onChange={(e) => setContentFieldText(e.target.value)}
-                    />
+                    <MDEditor value={contentFieldText} onChange={(x) => setContentFieldText(x ?? "")} height={25 * 25}></MDEditor>
+                    <input type="hidden" name="Content" value={contentFieldText} />
                 </FormGroup>
                 <FormGroup className="mt-1">
                     <Button type="submit">Edit</Button>
