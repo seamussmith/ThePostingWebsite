@@ -26,6 +26,10 @@ export function EditArticle({}) {
                     <Input
                         name="Content"
                         type="textarea"
+                        rows={(contentFieldText.match(/\n/g)?.length ?? 0) + 1}
+                        style={{
+                            resize: "none"
+                        }}
                         required
                         value={contentFieldText}
                         onChange={(e) => setContentFieldText(e.target.value)}
