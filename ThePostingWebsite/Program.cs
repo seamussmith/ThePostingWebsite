@@ -2,6 +2,8 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.InMemory;
 using ThePostingWebsite.Data;
+using Microsoft.AspNetCore.Identity;
+using ThePostingWebsite.Areas.Identity.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +14,9 @@ builder.Services.AddDbContext<ArticleContext>((options) =>
 {
     options.UseSqlite(builder.Configuration.GetConnectionString(nameof(ArticleContext)));
 });
-
+builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddEntityFrameworkStores<ThePostingWebsiteIdentityDbContext>();builder.Services.AddDbContext<ThePostingWebsiteIdentityDbContext>(options =>
+    options.UseSqlServer(connectionString));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -25,7 +29,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
-app.UseWebSockets();
+app.UseAuthentication();app.UseWebSockets();
 
 
 app.MapControllerRoute(
