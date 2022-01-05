@@ -1,6 +1,7 @@
 import React, { Component, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArticleIndex } from "../models/ArticleIndex";
+import { ArticleCard } from "./ArticleCard";
 
 export function Home() {
     const [articles, setArticles] = useState<ArticleIndex[] | null>([]);
@@ -13,7 +14,7 @@ export function Home() {
         <div>
             {articles?.map((article) => (
                 <div>
-                    <Link to={`/article/${article.id}`}>{article.title}</Link>
+                    <ArticleCard article={article} />
                 </div>
             )) ?? "loading..."}
         </div>
